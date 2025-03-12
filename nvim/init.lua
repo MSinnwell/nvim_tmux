@@ -229,6 +229,21 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end,
+  },
+  {
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    config = function()
+      require('ts_context_commentstring').setup {
+        enable_autocmd = false,
+      }
+    end,
+  },
+  { 'mfussenegger/nvim-dap' },
   { 'ellisonleao/glow.nvim', config = true, cmd = 'Glow' },
   {
     'Aasim-A/scrollEOF.nvim',
