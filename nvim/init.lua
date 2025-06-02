@@ -118,6 +118,9 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 -- Enable break indent
 vim.opt.breakindent = true
 
@@ -156,6 +159,17 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 20
+
+vim.diagnostic.config {
+  virtual_text = {
+    prefix = '', -- or '>>', '●', '', etc.
+    spacing = 2,
+  },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+}
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -229,6 +243,24 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  {
+    'windwp/nvim-ts-autotag',
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('nvim-ts-autotag').setup {
+        opts = {
+          enable_close = true,
+          enable_rename = true,
+          enable_close_on_slash = false,
+        },
+        -- Example of per-filetype override (optional)
+        -- per_filetype = {
+        --   ["html"] = { enable_close = false }
+        -- }
+      }
+    end,
+  },
   {
     'elixir-tools/elixir-tools.nvim',
     version = '*',
@@ -664,10 +696,16 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        clangd = {},
-        gopls = {},
-        pyright = {},
-        rust_analyzer = {},
+        -- clangd = {},
+        -- gopls = {},
+        -- pyright = {
+        --   settings = {
+        --     pyright = {
+        --       disableTaggedHints
+        --     }
+        --   }
+        -- },
+        -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
