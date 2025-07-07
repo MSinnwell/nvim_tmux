@@ -176,7 +176,6 @@ vim.diagnostic.config {
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
-
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -254,7 +253,17 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  {
+    'ms-jpq/chadtree',
+    branch = 'chad',
+    build = 'python3 -m chadtree deps', -- Use 'build' for the 'do' equivalent
+    -- You can also add other lazy.nvim options here, like lazy-loading,
+    -- dependencies, etc.
+    event = 'BufReadPost', -- Example: Lazy load on buffer read
+    config = function()
+      vim.keymap.set('n', '<leader>n', ':CHADopen<CR>', { desc = 'Open Chadtree' })
+    end,
+  }, -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
