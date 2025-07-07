@@ -253,17 +253,7 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  {
-    'ms-jpq/chadtree',
-    branch = 'chad',
-    build = 'python3 -m chadtree deps', -- Use 'build' for the 'do' equivalent
-    -- You can also add other lazy.nvim options here, like lazy-loading,
-    -- dependencies, etc.
-    event = 'BufReadPost', -- Example: Lazy load on buffer read
-    config = function()
-      vim.keymap.set('n', '<leader>n', ':CHADopen<CR>', { desc = 'Open Chadtree' })
-    end,
-  }, -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
