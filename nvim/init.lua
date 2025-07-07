@@ -110,6 +110,9 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+-- disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -178,6 +181,15 @@ vim.diagnostic.config {
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Remap ESC to jk and kj
+vim.keymap.set('i', 'jk', '<Esc>', { noremap = true, silent = true })
+-- You can also add kj for flexibility
+vim.keymap.set('i', 'kj', '<Esc>', { noremap = true, silent = true })
+
+-- toggle nvim tree
+vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { noremap = true, silent = true, desc = 'Toggle NvimTree' })
+vim.keymap.set('n', '<leader>nf', ':NvimTreeFocus<CR>', { noremap = true, silent = true, desc = 'Focus NvimTree' })
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -243,6 +255,28 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {
+        view = {
+          width = 30,
+          side = 'left',
+          -- mappings = {
+          --   custom_only = false,
+          --   list = {
+          --     { key = 'v', action = 'vsplit' },
+          --   },
+          -- },
+        },
+      }
+    end,
+  },
   {
     'windwp/nvim-ts-autotag',
     event = { 'BufReadPre', 'BufNewFile' },
