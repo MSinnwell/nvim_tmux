@@ -277,12 +277,40 @@ require('lazy').setup({
     end,
   },
   {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter', -- Lazy-load on insert mode
+    config = function()
+      require('copilot').setup {
+        -- Disable built-in ghost text suggestions.
+        -- We will use nvim-cmp/copilot-cmp for completions
+        -- and sidekick.nvim for Next Edit Suggestions (NES).
+        suggestion = {
+          enabled = false,
+        },
+        panel = {
+          enabled = false, -- Disable the suggestion panel
+        },
+        lsp = {
+          enable = true, -- **Crucial for sidekick.nvim's NES feature**
+        },
+      }
+    end,
+  },
+
+  -- The plugin that integrates copilot.lua suggestions into nvim-cmp
+  {
+    'zbirenbaum/copilot-cmp',
+    dependencies = 'zbirenbaum/copilot.lua',
+    opts = {},
+  },
+  {
     'folke/sidekick.nvim',
     opts = {
       -- add any options here
       cli = {
         mux = {
-          backend = 'zellij',
+          backend = 'tmux',
           enabled = true,
         },
       },
@@ -343,11 +371,6 @@ require('lazy').setup({
       desc = "Sidekick Toggle Claude",
     },
   },
-  },
-  {
-    'github/copilot.vim',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
   },
   {
     'windwp/nvim-ts-autotag',
@@ -991,6 +1014,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'copilot' },
         },
       }
     end,
