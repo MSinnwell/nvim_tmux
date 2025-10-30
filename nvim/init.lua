@@ -180,6 +180,12 @@ vim.diagnostic.config {
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Swap j/k and gj/gk functionality
+vim.keymap.set('n', 'j', 'gj', { noremap = true, silent = true })
+vim.keymap.set('n', 'k', 'gk', { noremap = true, silent = true })
+vim.keymap.set('n', 'gj', 'j', { noremap = true, silent = true })
+vim.keymap.set('n', 'gk', 'k', { noremap = true, silent = true })
+
 -- Remap ESC to jk and kj
 vim.keymap.set('i', 'jk', '<Esc>', { noremap = true, silent = true })
 -- You can also add kj for flexibility
@@ -295,7 +301,7 @@ require('lazy').setup({
         -- We will use nvim-cmp/copilot-cmp for completions
         -- and sidekick.nvim for Next Edit Suggestions (NES).
         suggestion = {
-          enabled = false,
+          enabled = true,
         },
         panel = {
           enabled = false, -- Disable the suggestion panel
