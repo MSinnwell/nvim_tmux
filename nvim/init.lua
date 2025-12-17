@@ -269,6 +269,10 @@ require('lazy').setup({
     },
     config = function()
       require('nvim-tree').setup {
+        git = {
+          enable = true,
+          ignore = false,
+        },
         view = {
           width = 30,
           side = 'left',
@@ -618,7 +622,15 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      -- vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', function()
+        -- Pass the configuration table directly to find_files
+        builtin.find_files {
+          no_ignore = true,
+          -- You can also add hidden = true if you want to see dotfiles (.config, .git, etc.)
+          hidden = true,
+        }
+      end, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
