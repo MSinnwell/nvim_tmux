@@ -262,6 +262,9 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  defaults = {
+    version = '*',
+  },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   -- {
   --   'nvim-treesitter/nvim-treesitter-context',
@@ -569,7 +572,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    version = '*',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -748,8 +751,15 @@ require('lazy').setup({
           -- In this case, we create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
           local map = function(keys, func, desc, mode)
+            if func == nil then
+              -- This will tell you exactly which mapping is broken in your :messages
+              print("LSP Config Error: Mapping for '" .. desc .. "' is nil. Is Telescope installed?")
+              return
+            end
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+            -- mode = mode or 'n'
+            -- vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
           -- Jump to the definition of the word under your cursor.
@@ -847,6 +857,17 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
+        texlab = {
+          settings = {
+            texlab = {
+              build = {
+                executable = 'latexmk',
+                args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
+                onSave = true,
+              },
+            },
+          },
+        },
         -- clangd = {},
         -- gopls = {},
         -- pyright = {
@@ -976,12 +997,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -996,7 +1017,19 @@ require('lazy').setup({
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
-      luasnip.config.setup {}
+      luasnip.config.setup {
+        store_selection_keys = '<Tab>',
+        enable_autosnippets = true,
+        indent_str = '  ',
+      }
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'LuasnipPostExpand',
+        callback = function()
+          local row = vim.api.nvim_win_get_cursor(0)[1]
+          vim.cmd(row .. 'retab')
+        end,
+      })
+      require('luasnip.loaders.from_vscode').lazy_load { paths = nil }
 
       cmp.setup {
         snippet = {
@@ -1070,6 +1103,8 @@ require('lazy').setup({
           { name = 'copilot' },
         },
       }
+      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
     end,
   },
 
